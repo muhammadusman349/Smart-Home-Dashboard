@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+from celery.schedules import crontab
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -39,6 +40,9 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "account",
+    "ai_control",
+    "device",
+    "notification",
 ]
 
 MIDDLEWARE = [
@@ -136,3 +140,28 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+# Celery settings
+CELERY_BROKER_URL = "amqp://localhost:5672"
+CELERY_RESULT_BACKEND = "django-db"
+
+# broker_connections_retry_on_startup
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+
+# Optional Celery settings
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC'
+
+# Celery Beat
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+
+
+# CELERY_BEAT_SCHEDULE = {
+#     'process-device-schedule-every-minute': {
+#         'task': 'device.tasks.process_device_schedule',
+#         'schedule': crontab(),  # Run every minute
+#     },
+# }
